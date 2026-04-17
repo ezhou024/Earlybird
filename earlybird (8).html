@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EARLYBIRD</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0C1B2E; color: #fff; }
+  a { text-decoration: none; color: inherit; }
+
+  .site-header { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 3rem; background: #0C1B2E; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+  .logo-text { font-size: 17px; font-weight: 500; letter-spacing: 0.08em; color: #fff; cursor: pointer; }
+  .nav { display: flex; gap: 2rem; }
+  .nav a { font-size: 13px; color: rgba(255,255,255,0.55); transition: color 0.15s; cursor: pointer; }
+  .nav a:hover { color: #fff; }
+
+  .hero { background: #0C1B2E; padding: 6rem 3rem 5rem; text-align: center; }
+  .hero-tag { display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #FAC775; border: 0.5px solid rgba(250,199,117,0.35); border-radius: 999px; padding: 4px 14px; margin-bottom: 1.5rem; }
+  .hero h1 { font-size: 52px; font-weight: 500; line-height: 1.1; letter-spacing: -0.5px; color: #fff; margin-bottom: 1rem; }
+  .hero p { font-size: 18px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 1.5rem; }
+  .section-wrap { padding: 0 3rem 4rem; }
+  .latest-wrap { padding: 3.5rem 3rem 4rem; }
+  .divider { border: none; border-top: 0.5px solid rgba(255,255,255,0.08); margin: 0 3rem 3.5rem; }
+
+  .featured-card { display: grid; grid-template-columns: 1fr 1.4fr; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.15s; background: #132236; }
+  .featured-card:hover { border-color: rgba(255,255,255,0.28); }
+  .featured-img { min-height: 340px; overflow: hidden; }
+  .featured-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .featured-body { padding: 2.5rem 3rem; display: flex; flex-direction: column; justify-content: space-between; }
+  .issue-badge { display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(250,199,117,0.15); color: #FAC775; padding: 3px 10px; border-radius: 999px; margin-bottom: 1rem; }
+  .featured-title { font-size: 26px; font-weight: 500; line-height: 1.25; margin-bottom: 0.75rem; color: #fff; }
+  .featured-desc { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.75; flex: 1; margin-bottom: 1.5rem; }
+  .read-link { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: #FAC775; background: rgba(250,199,117,0.1); border: 0.5px solid rgba(250,199,117,0.3); border-radius: 8px; padding: 8px 16px; transition: background 0.15s; cursor: pointer; width: fit-content; }
+  .read-link:hover { background: rgba(250,199,117,0.18); }
+
+  .about-card { border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; display: grid; grid-template-columns: 1.2fr 1fr; background: #132236; }
+  .about-left { padding: 3rem; border-right: 0.5px solid rgba(255,255,255,0.08); }
+  .about-heading { font-size: 26px; font-weight: 500; line-height: 1.25; margin-bottom: 1rem; color: #fff; }
+  .about-body { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.85; }
+  .about-right { padding: 3rem; display: flex; flex-direction: column; gap: 1.5rem; justify-content: center; }
+  .stat-row { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 1.5rem; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+  .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .stat-num { font-size: 32px; font-weight: 500; letter-spacing: -0.5px; color: #FAC775; }
+  .stat-label { font-size: 14px; color: rgba(255,255,255,0.45); }
+
+  .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+  .team-card { border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem 1.5rem; text-align: center; background: #132236; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; transition: border-color 0.15s; }
+  .team-card:hover { border-color: rgba(255,255,255,0.22); }
+  .avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 500; margin-bottom: 0.25rem; }
+  .av-amber { background: rgba(250,199,117,0.18); color: #FAC775; }
+  .av-teal  { background: rgba(29,158,117,0.18); color: #5DCAA5; }
+  .av-purple{ background: rgba(127,119,221,0.18); color: #AFA9EC; }
+  .av-coral { background: rgba(216,90,48,0.18); color: #F0997B; }
+  .team-name { font-size: 15px; font-weight: 500; color: #fff; }
+  .team-role { font-size: 12px; color: rgba(255,255,255,0.45); }
+  .team-email { font-size: 11px; color: rgba(255,255,255,0.28); word-break: break-all; }
+
+  .sectors-outer { padding: 0 3rem 4rem; }
+  .sectors-carousel-wrap { position: relative; }
+  .arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: #132236; border: 0.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; transition: border-color 0.15s; color: #fff; }
+  .arrow-btn:hover { border-color: #FAC775; }
+  .arrow-btn svg { width: 14px; height: 14px; }
+  .arrow-left { left: -18px; }
+  .arrow-right { right: -18px; }
+  .sectors-track-wrap { overflow: hidden; }
+  .sectors-track { display: flex; gap: 1rem; }
+  .sector-card { border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; cursor: pointer; background: #132236; transition: border-color 0.15s; }
+  .sector-card:hover { border-color: #FAC775; }
+  .sector-icon { width: 44px; height: 44px; border-radius: 8px; background: rgba(250,199,117,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+  .sector-icon svg { width: 24px; height: 24px; }
+  .sector-name { font-size: 14px; font-weight: 500; margin-bottom: 0.3rem; line-height: 1.35; color: #fff; }
+  .sector-count { font-size: 12px; color: rgba(255,255,255,0.35); }
+
+  .posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .post-card { border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.75rem; cursor: pointer; background: #132236; transition: border-color 0.15s; display: flex; flex-direction: column; gap: 0.5rem; text-decoration: none; color: inherit; }
+  .post-card:hover { border-color: rgba(255,255,255,0.28); }
+  .post-date { font-size: 12px; color: rgba(255,255,255,0.35); }
+  .post-title { font-size: 16px; font-weight: 500; line-height: 1.4; color: #fff; }
+  .post-teaser { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; flex: 1; }
+  .post-sector { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 999px; margin-top: 0.4rem; align-self: flex-start; }
+  .post-sector.energy    { background: rgba(250,199,117,0.15); color: #FAC775; }
+  .post-sector.tech      { background: rgba(175,169,236,0.15); color: #AFA9EC; }
+  .post-sector.financial { background: rgba(93,202,165,0.15); color: #5DCAA5; }
+  .post-sector.consumer  { background: rgba(240,153,123,0.15); color: #F0997B; }
+  .post-sector.industrial{ background: rgba(180,178,169,0.15); color: #B4B2A9; }
+
+  .footer { background: #071120; padding: 2.5rem 3rem; display: flex; justify-content: space-between; align-items: center; border-top: 0.5px solid rgba(255,255,255,0.06); }
+  .footer-logo { font-size: 15px; font-weight: 500; color: #fff; letter-spacing: 0.08em; }
+  .footer-links { display: flex; gap: 2rem; }
+  .footer-links a { font-size: 13px; color: rgba(255,255,255,0.35); cursor: pointer; }
+  .footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(4,10,20,0.88); z-index: 200; overflow-y: auto; padding: 2rem 1rem; }
+  .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+  .modal {
+    background: #0E1F35; border: 0.5px solid rgba(255,255,255,0.12); border-radius: 16px;
+    width: 100%; max-width: 800px; overflow: hidden;
+    user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 2rem 2.5rem 1.5rem; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+  .modal-header-left { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+  .modal-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #FAC775; }
+  .modal-title { font-size: 22px; font-weight: 500; color: #fff; line-height: 1.2; }
+  .modal-sub { font-size: 13px; color: rgba(255,255,255,0.45); }
+  .modal-date { font-size: 12px; color: rgba(255,255,255,0.35); white-space: nowrap; margin-left: 2rem; padding-top: 4px; }
+  .modal-close { background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 24px; line-height: 1; padding: 0; margin-left: 1.5rem; transition: color 0.15s; }
+  .modal-close:hover { color: #fff; }
+  .modal-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: rgba(255,255,255,0.06); border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+  .stat-cell { background: #0E1F35; padding: 1rem 1.25rem; }
+  .stat-cell-label { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 0.3rem; }
+  .stat-cell-value { font-size: 16px; font-weight: 500; color: #fff; line-height: 1.2; }
+  .stat-cell-sub { font-size: 11px; margin-top: 2px; }
+  .green { color: #5DCAA5; } .red { color: #F0997B; } .amber { color: #FAC775; }
+  .modal-body { display: grid; grid-template-columns: 1fr 280px; }
+  .modal-main { padding: 2rem 2.5rem; border-right: 0.5px solid rgba(255,255,255,0.08); }
+  .modal-sidebar { padding: 2rem; }
+  .findings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+  .findings-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+  .badge { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+  .badge-mixed { background: rgba(250,199,117,0.15); color: #FAC775; }
+  .badge-high  { background: rgba(240,95,95,0.15); color: #F09595; }
+  .badge-bull  { background: rgba(93,202,165,0.15); color: #5DCAA5; }
+  .badge-watch { background: rgba(250,199,117,0.15); color: #FAC775; }
+  .badge-earn  { background: rgba(175,169,236,0.15); color: #AFA9EC; }
+  .finding { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+  .finding:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .finding-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.5rem; }
+  .finding-title { font-size: 14px; font-weight: 500; color: #fff; line-height: 1.3; }
+  .finding-body { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+  .finding-body strong { color: rgba(255,255,255,0.85); font-weight: 500; }
+  .sidebar-section { margin-bottom: 1.75rem; }
+  .sidebar-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 1rem; }
+  .growth-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
+  .growth-row:last-child { border-bottom: none; }
+  .growth-country { font-size: 13px; color: rgba(255,255,255,0.7); }
+  .growth-status { font-size: 12px; font-weight: 500; }
+  .corp-item { padding: 0.75rem 0; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
+  .corp-item:last-child { border-bottom: none; }
+  .corp-name { font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 0.2rem; }
+  .corp-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="logo-text" onclick="window.scrollTo({top:0,behavior:'smooth'})">EARLYBIRD</span>
+  <nav class="nav">
+    <a onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</a>
+    <a onclick="document.getElementById('team').scrollIntoView({behavior:'smooth'})">Team</a>
+    <a onclick="document.getElementById('sectors').scrollIntoView({behavior:'smooth'})">Sectors</a>
+    <a onclick="document.getElementById('archive').scrollIntoView({behavior:'smooth'})">Archive</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <span class="hero-tag">Weekly newsletter</span>
+  <h1>Ideas worth waking up for.</h1>
+  <p>A curated weekly read for curious minds, delivered fresh every morning.</p>
+</div>
+
+<!-- THIS MONTHS MARKET -->
+<section class="latest-wrap">
+  <p class="section-label">This Months Market</p>
+  <div class="featured-card" onclick="openModal()">
+    <div class="featured-img">
+      <img src="https://images.ctfassets.net/1aemqu6a6t65/5rPsNLkgpwvZPSmjhE5ChB/ab1a60f5fa9ca6e331833e97044a6345/wall-street-photo-tagger-yancey-iv-nyc-and-company-02-2?w=1200&h=800&q=75" alt="Wall Street" />
+    </div>
+    <div class="featured-body">
+      <div>
+        <span class="issue-badge">Apr 16, 2026</span>
+        <p class="featured-title">Global Markets Defy Geopolitical Gravity but Cracks are Showing</p>
+        <p class="featured-desc">Energy prices are surging as the Strait of Hormuz remains blocked, the Fed's independence is under political fire, and a fragile Middle East ceasefire is the only thing standing between record equity highs and a sharp correction.</p>
+      </div>
+      <span class="read-link">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+        Read this issue
+      </span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ABOUT -->
+<section class="section-wrap" id="about">
+  <p class="section-label">About</p>
+  <div class="about-card">
+    <div class="about-left">
+      <p class="about-heading">A Worldwide Perspective, Delivered Early</p>
+      <p class="about-body">We provide news with a worldwide perspective to give you insight into what is going on around the globe through our reporting of business, government, culture, lifestyle, technology, and health. We source for the latest updates with curated content, including breaking news, articles, transactions, and opinions.</p>
+    </div>
+    <div class="about-right">
+      <div class="stat-row"><span class="stat-label">Issues published</span><span class="stat-num">99+</span></div>
+      <div class="stat-row"><span class="stat-label">Sectors covered</span><span class="stat-num">6</span></div>
+      <div class="stat-row"><span class="stat-label">Founded</span><span class="stat-num">2024</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- TEAM -->
+<section class="section-wrap" id="team">
+  <p class="section-label">The team</p>
+  <div class="team-grid">
+    <div class="team-card"><div class="avatar av-amber">EZ</div><p class="team-name">Edison Zhou</p><p class="team-role">Team Lead</p><p class="team-email">ezhou024@gmail.com</p></div>
+    <div class="team-card"><div class="avatar av-teal">ET</div><p class="team-name">Emily Tran</p><p class="team-role">Senior Analyst</p><p class="team-email">emily_tran@brown.edu</p></div>
+    <div class="team-card"><div class="avatar av-purple">RW</div><p class="team-name">Ryan Wu</p><p class="team-role">Senior Analyst</p><p class="team-email">ryw@umich.edu</p></div>
+    <div class="team-card"><div class="avatar av-coral">ER</div><p class="team-name">Emmitt Rattey</p><p class="team-role">Analyst</p><p class="team-email">emmitt_rattey@brown.edu</p></div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- SECTORS -->
+<section class="sectors-outer" id="sectors">
+  <p class="section-label">Sectors</p>
+  <div class="sectors-carousel-wrap">
+    <button class="arrow-btn arrow-left" id="arrowLeft">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
+    </button>
+    <div class="sectors-track-wrap">
+      <div class="sectors-track" id="track"></div>
+    </div>
+    <button class="arrow-btn arrow-right" id="arrowRight">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 2l5 5-5 5"/></svg>
+    </button>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ARCHIVE -->
+<section class="section-wrap" id="archive">
+  <p class="section-label">Archive</p>
+  <div class="posts-grid">
+    <a class="post-card" href="https://www.linkedin.com/feed/update/urn:li:activity:7450536001636216833" target="_blank"><span class="post-date">Apr 15</span><p class="post-title">Duke Energy Closes $2.48B Sale to Spire</p><p class="post-teaser">A landmark divestiture reshapes the utility sector as Spire expands its natural gas footprint nationwide.</p><span class="post-sector energy">Energy</span></a>
+    <a class="post-card" href="https://www.linkedin.com/feed/update/urn:li:activity:7449448871883071490" target="_blank"><span class="post-date">Apr 14</span><p class="post-title">White House Cybersecurity Crackdown</p><p class="post-teaser">The administration moves to tighten federal cyber defences amid a surge in state-sponsored attacks on critical infrastructure.</p><span class="post-sector tech">Technology</span></a>
+    <a class="post-card" href="https://www.linkedin.com/feed/update/urn:li:activity:7448724040871186432" target="_blank"><span class="post-date">Apr 12</span><p class="post-title">The Grok Mandate in the SpaceX IPO</p><p class="post-teaser">Investors are scrutinising how deep xAI's Grok integration runs inside SpaceX as the long-awaited listing draws closer.</p><span class="post-sector financial">Financial</span></a>
+    <a class="post-card" href="https://www.linkedin.com/feed/update/urn:li:activity:7448361657904324608" target="_blank"><span class="post-date">Apr 11</span><p class="post-title">OpenAI Acquires TBPN</p><p class="post-teaser">OpenAI's latest acquisition signals a push beyond software into media distribution and creator infrastructure.</p><span class="post-sector tech">Technology</span></a>
+    <a class="post-card" href="https://www.linkedin.com/feed/update/urn:li:activity:7447999310409023489" target="_blank"><span class="post-date">Apr 10</span><p class="post-title">Levi Strauss Raises Fiscal-Year Guidance</p><p class="post-teaser">Strong direct-to-consumer momentum and international demand push the denim giant to upgrade its full-year outlook.</p><span class="post-sector consumer">Consumer Retail</span></a>
+    <a class="post-card" href="https://www.linkedin.com/feed/update/urn:li:activity:7447636903891357696" target="_blank"><span class="post-date">1w ago</span><p class="post-title">Blackstone and Tinicum Seal £1.4bn Bet on Aerospace</p><p class="post-teaser">The joint acquisition signals renewed private equity confidence in aerospace supply chains as defence spending accelerates globally.</p><span class="post-sector industrial">Industrial</span></a>
+  </div>
+</section>
+
+<footer class="footer">
+  <span class="footer-logo">EARLYBIRD</span>
+  <div class="footer-links">
+    <a onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</a>
+    <a onclick="document.getElementById('team').scrollIntoView({behavior:'smooth'})">Team</a>
+    <a onclick="document.getElementById('sectors').scrollIntoView({behavior:'smooth'})">Sectors</a>
+    <a onclick="document.getElementById('archive').scrollIntoView({behavior:'smooth'})">Archive</a>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <span class="modal-eyebrow">Global Markets Intelligence</span>
+        <p class="modal-title">Economic &amp; Market Outlook</p>
+        <p class="modal-sub">Geopolitical risk, rates, equity performance and corporate earnings</p>
+      </div>
+      <span class="modal-date">April 2026</span>
+      <button class="modal-close" onclick="closeModal()">&#215;</button>
+    </div>
+    <div class="modal-stats">
+      <div class="stat-cell"><div class="stat-cell-label">S&amp;P 500</div><div class="stat-cell-value">Record</div><div class="stat-cell-sub green">All-time high</div></div>
+      <div class="stat-cell"><div class="stat-cell-label">Earnings Beat Rate</div><div class="stat-cell-value">80%+</div><div class="stat-cell-sub green">Above consensus</div></div>
+      <div class="stat-cell"><div class="stat-cell-label">China GDP</div><div class="stat-cell-value">~5.0%</div><div class="stat-cell-sub green">Beat forecasts</div></div>
+      <div class="stat-cell"><div class="stat-cell-label">Hormuz Status</div><div class="stat-cell-value">Blocked</div><div class="stat-cell-sub red">Supply disrupted</div></div>
+      <div class="stat-cell"><div class="stat-cell-label">Fed Funds Rate</div><div class="stat-cell-value">On hold</div><div class="stat-cell-sub amber">Political pressure</div></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-main">
+        <div class="findings-header"><span class="findings-label">Key Findings</span><span class="badge badge-mixed">Mixed Outlook</span></div>
+        <div class="finding"><div class="finding-title-row"><p class="finding-title">Middle East conflict and energy shock</p><span class="badge badge-high">High Risk</span></div><p class="finding-body">A U.S.-Iran ceasefire remains fragile with ongoing negotiations. The Strait of Hormuz blockade is disrupting global energy supply; the IMF has warned <strong>all economies will feel the impact</strong> as prices surge. Europe faces potential jet fuel shortages, threatening aviation and supply chains. Energy cost pressure feeds directly into inflation, rates, consumer spending and corporate margins.</p></div>
+        <div class="finding"><div class="finding-title-row"><p class="finding-title">Equity markets at record highs despite chaos</p><span class="badge badge-bull">Bullish Signal</span></div><p class="finding-body">S&amp;P 500 and Nasdaq are both printing all-time highs. <strong>Over 80% of reporting companies beat earnings expectations</strong> this cycle. Markets are pricing in conflict resolution and forward-looking on de-escalation. The risk: if the geopolitical bet is wrong, the correction could be sharp and swift.</p></div>
+        <div class="finding"><div class="finding-title-row"><p class="finding-title">Fed independence under political pressure</p><span class="badge badge-watch">Watch Closely</span></div><p class="finding-body">The White House is escalating attacks on Fed Chair Jerome Powell, pushing for rate cuts and openly backing a replacement candidate. Any perceived erosion of central bank independence carries <strong>significant implications for rates, bond markets and USD positioning</strong> globally.</p></div>
+        <div class="finding"><div class="finding-title-row"><p class="finding-title">Corporate divergence: large caps vs. cost-sensitive names</p><span class="badge badge-earn">Earnings</span></div><p class="finding-body">PepsiCo beat expectations on strong global sales. Netflix earnings are in focus following strategic repositioning. Spirit Airlines is at <strong>risk of liquidation</strong> due to surging fuel costs, illustrating the bifurcation between companies with pricing power and those exposed to input cost volatility.</p></div>
+      </div>
+      <div class="modal-sidebar">
+        <div class="sidebar-section">
+          <p class="sidebar-label">Global Growth Snapshot</p>
+          <div class="growth-row"><span class="growth-country">United States</span><span class="growth-status green">Resilient</span></div>
+          <div class="growth-row"><span class="growth-country">China</span><span class="growth-status green">~5% GDP growth</span></div>
+          <div class="growth-row"><span class="growth-country">United Kingdom</span><span class="growth-status amber">Growth at risk</span></div>
+          <div class="growth-row"><span class="growth-country">Eurozone</span><span class="growth-status amber">Energy exposed</span></div>
+          <div class="growth-row"><span class="growth-country">Middle East</span><span class="growth-status red">Active conflict</span></div>
+        </div>
+        <div class="sidebar-section">
+          <p class="sidebar-label">Corporate Watch</p>
+          <div class="corp-item"><p class="corp-name">PepsiCo</p><p class="corp-desc">Beat consensus. Strong international sales. Pricing power intact.</p></div>
+          <div class="corp-item"><p class="corp-name">Netflix</p><p class="corp-desc">Earnings in focus. Post-strategy-shift trajectory key for media sector.</p></div>
+          <div class="corp-item"><p class="corp-name">Spirit Airlines</p><p class="corp-desc">Liquidation risk. Fuel cost exposure illustrates sector vulnerability.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function handleOverlayClick(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+const modal = document.getElementById('modalBox');
+modal.addEventListener('copy', e => e.preventDefault());
+modal.addEventListener('cut', e => e.preventDefault());
+modal.addEventListener('contextmenu', e => e.preventDefault());
+modal.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && ['c','x','a','p'].includes(e.key.toLowerCase())) e.preventDefault();
+});
+
+const C = '#FAC775';
+const sectors = [
+  { name: "Technology Media Telecom", count: "47+", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="${C}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>` },
+  { name: "Financial Institutions & Sponsors", count: "38+", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="${C}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M5 6l7-3 7 3"/><rect x="5" y="10" width="3" height="11"/><rect x="10.5" y="10" width="3" height="11"/><rect x="16" y="10" width="3" height="11"/></svg>` },
+  { name: "Healthcare", count: "29+", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="${C}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/><path d="M10 11h4M12 9v4"/></svg>` },
+  { name: "Consumer & Retail", count: "24+", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="${C}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>` },
+  { name: "Energy", count: "18+", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="${C}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>` },
+  { name: "Industrial & Material", count: "14+", icon: `<svg viewBox="0 0 24 24" fill="none" stroke="${C}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20V10l4-4v14"/><path d="M8 20V8l4-6v18"/><path d="M12 20V6l4 4v10"/><path d="M16 20v-8l4-2v10"/></svg>` }
+];
+
+const track = document.getElementById('track');
+const leftBtn = document.getElementById('arrowLeft');
+const rightBtn = document.getElementById('arrowRight');
+const N = sectors.length;
+const GAP = 16;
+let idx = N, animating = false;
+
+function buildTrack() {
+  track.innerHTML = '';
+  track.style.gap = GAP + 'px';
+  const cw = Math.floor((document.querySelector('.sectors-track-wrap').offsetWidth - 5 * GAP) / 6);
+  [...sectors, ...sectors, ...sectors].forEach(s => {
+    const d = document.createElement('div');
+    d.className = 'sector-card';
+    d.style.flex = `0 0 ${cw}px`;
+    d.innerHTML = `<div class="sector-icon">${s.icon}</div><p class="sector-name">${s.name}</p><p class="sector-count">${s.count} issues</p>`;
+    track.appendChild(d);
+  });
+  setPos(idx, false);
+}
+
+function cardWidth() { const c = track.querySelector('.sector-card'); return c ? c.offsetWidth + GAP : 200 + GAP; }
+function setPos(i, animated) {
+  track.style.transition = animated ? 'transform 0.35s cubic-bezier(0.4,0,0.2,1)' : 'none';
+  track.style.transform = `translateX(-${i * cardWidth()}px)`;
+}
+track.addEventListener('transitionend', () => {
+  animating = false;
+  if (idx < N) { idx += N; setPos(idx, false); }
+  else if (idx >= N * 2) { idx -= N; setPos(idx, false); }
+});
+leftBtn.addEventListener('click', () => { if (animating) return; animating = true; idx--; setPos(idx, true); });
+rightBtn.addEventListener('click', () => { if (animating) return; animating = true; idx++; setPos(idx, true); });
+
+window.addEventListener('load', buildTrack);
+window.addEventListener('resize', buildTrack);
+</script>
+</body>
+</html>
